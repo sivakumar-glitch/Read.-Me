@@ -1,0 +1,18 @@
+import openai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+async def generate_ai_summary(username: str):
+    page = await db.pages.find_one({"username": username})
+    if not page:
+        return None
+    
+    prompt = f"Summarize the Facebook page {page['name']} with {page['followers']} followers, category {page['category']}."
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response["choices"][0]["message"]["content"]
