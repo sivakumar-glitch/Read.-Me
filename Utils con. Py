@@ -1,0 +1,13 @@
+import boto3
+import os
+
+s3 = boto3.client("s3",
+                  aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
+                  aws_secret_access_key=os.getenv("AWS_SECRET_KEY"))
+
+def upload_to_s3(image_url, bucket_name):
+    response = requests.get(image_url)
+    file_name = image_url.split("/")[-1]
+
+    s3.put_object(Bucket=bucket_name, Key=file_name, Body=response.content)
+    return f"https://{bucket_name}.s3.amazonaws.com/{file_name}"
