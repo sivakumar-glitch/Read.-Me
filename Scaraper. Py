@@ -1,0 +1,23 @@
+import httpx
+from bs4 import BeautifulSoup
+
+async def scrape_facebook_page(username: str):
+    url = f"https://www.facebook.com/{username}"
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+        if response.status_code != 200:
+            return None
+    
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    data = {
+        "username": username,
+        "name": soup.find("title").text.strip(),
+        "url": url,
+        "profile_pic": soup.find("img")["src"] if soup.find("img") else "",
+        "followers": 50000,  # Dummy value, replace with real extraction
+        "likes": 45000,  # Dummy value
+        "category": "Technology",
+    }
+    return data
